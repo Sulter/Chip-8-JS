@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script>
+
+</script> 
+
+<script type="text/javascript" src="src/drawing.js"></script>
+<script type="text/javascript" src="src/CPU.js"></script>
+
+</head>
+<body>
+
+<canvas id="screen" width="640" height="320">Your browser does not support the HTML5 canvas tag.</canvas>
+
+<br><br>
+<input type="file" id="fileinput" />
+
+ <audio id="background_audio" autoplay="autoplay" loop='loop'>
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+
+//constants
+var SCREEN_WIDTH = 640;
+var SCREEN_HEIGHT = 320; 
+
+//pointer to the interval timer
+var interval; 
+
+//set up the canvas
+var draw = new drawing();
+
+//INITIALIZATION
+var chip = new chip_cpu();
+
+//disable sound for now
+document.getElementById('background_audio').muted = true;
+
+function main_loop(){
+
+	if(!chip.key_press_wait)
+		chip.emulate_cycle();	
+
+	if(chip.draw_flag){
+		draw.draw_screen();
+		chip.draw_flag = false;
+	}
+		
+}
+
+//the load file event
+function readSingleFile(evt) {
+  
+    var f = evt.target.files[0]; 
+
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+		var rom_binary_string = e.target.result;
+		for(var i = 0; i < rom_binary_string.length; i++){ //loads the rom into the memory
+			chip.memory[i+0x200] = rom_binary_string.charCodeAt(i);
+		}
+		//****************MAIN LOOP START**********************
+		interval = setInterval(main_loop, 1000 / 500);
+      }
+      r.readAsBinaryString(f);
+    } else { 
+      alert("Failed to load file");
+    }
+
+}
+
+//the fileinput DOM
+document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+
+//key input handlers
+document.onkeydown=key_handler; 
+document.onkeyup=key_handler; 
+function key_handler(e) { 
+e = e || event;
+/*
+49 50 51 52
+81 87 59 82
+65 89 68 70
+90 88 67 86
+*/
+var key_status = 0;
+
+if(e.type == 'keydown')
+	key_status = 1;
+if(e.type == 'keyup')
+	key_status = 0;
+
+	switch(e.keyCode){
+		case 49:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[0] = key_status;
+			break;
+		case 50:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[1] = key_status;
+			break;
+		case 51:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[2] = key_status;
+			break;	
+		case 52:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[3] = key_status;
+			break;
+		case 81:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[4] = key_status;
+			break;
+		case 87:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[5] = key_status;
+			break;	
+		case 59:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[6] = key_status;
+			break;
+		case 82:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[7] = key_status;
+			break;
+		case 65:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[8] = key_status;
+			break;	
+		case 89:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[9] = key_status;
+			break;
+		case 68:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[10] = key_status;
+			break;
+		case 70:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[11] = key_status;
+			break;
+		case 90:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[12] = key_status;
+			break;
+		case 88:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[13] = key_status;
+			break;
+		case 67:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[14] = key_status;
+			break;
+		case 86:
+			if(chip.key_press_wait == true){
+				chip.V[chip.VX_key_press_wait] = 0;
+				chip.key_press_wait = false;
+			}
+			chip.key[15] = key_status;
+			break;
+	}
+
+} 
+  
+
+</script>
+
+
+
+</body>
+</html> 
